@@ -56,42 +56,115 @@ def redraw_window(win):
 
 def check_winner(player_movements):
     for k, v in player_movements.items():
-        v = list(v)
-        x_positions = [tup[0] for tup in v]
-        y_positions = [tup[1] for tup in v]
-        conditions = [x_positions == [0]*3, x_positions == [167]*3, x_positions == [334]*3, y_positions == [0]*3, y_positions == [167]*3, y_positions == [334]*3]
-        if any(conditions) or sorted(x_positions) == [0, 167, 334] and sorted(y_positions) == [0, 167, 334]:
+        condition1 = False
+        counter1 = 0
+        counter2 = 0
+        counter3 = 0
+        counter4 = 0
+        lst = list(v)
+
+        x_positions = [tup[0] for tup in lst]
+        y_positions = [tup[1] for tup in lst]
+        x_counter = Counter(x_positions)
+        y_counter = Counter(y_positions)
+        diagonals1 = [(0, 0, 167, 167), (167, 167, 334, 334), (334, 334, 501, 501)]
+        diagonals2 = [(334, 0, 501, 167), (167, 167, 334, 334), (0, 334, 167, 501)]
+
+        for p in diagonals1:
+            if p in lst:
+                counter3 += 1
+        for p in diagonals2:
+            if p in lst:
+                counter4 += 1
+
+        for v1 in x_counter.values():
+            if v1 >= 3:
+                condition1 = True
+        for v1 in y_counter.values():
+            if v1 >= 3:
+                condition1 = True
+        
+        if condition1 or counter2 >= 3 or counter3 >= 3 or counter4 >= 3:
             return k
+            break
 
     if not positions_copy:
         return 'tie'
+
 
 def check_winner_minimax(board):
     x_positionsX = []
     y_positionsX = []
     x_positionsO = []
     y_positionsO = []
-    
+    lstX = []
+    lstO = []
+
+    condition1X = False
+    condition1O = False
+
+    counter1X = 0
+    counter2X = 0
+    counter3X = 0
+    counter4X = 0
+    counter1O = 0
+    counter2O = 0
+    counter3O = 0
+    counter4O = 0
+
+    diagonals1 = [(0, 0), (167, 167), (334, 334)]
+    diagonals2 = [(334, 0), (167, 167), (0, 334)]
+
+
     for k, v in board.items():
         if v == 'x':
             x_positionsX.append(k[0])
             y_positionsX.append(k[1])
+            lstX.append((k[0], k[1]))
         elif v == 'o':
             x_positionsO.append(k[0])
             y_positionsO.append(k[1])
+            lstO.append((k[0], k[1]))
 
-    conditions1 = [x_positionsX == [0]*3, x_positionsX == [167]*3, x_positionsX == [334]*3, y_positionsX == [0]*3, y_positionsX == [167]*3, y_positionsX == [334]*3]
-    conditions2 = [x_positionsO == [0]*3, x_positionsO == [167]*3, x_positionsO == [334]*3, y_positionsO == [0]*3, y_positionsO == [167]*3, y_positionsO == [334]*3]
+    x_counterX = Counter(x_positionsX)
+    y_counterX = Counter(y_positionsX)
+    x_counterO = Counter(x_positionsO)
+    y_counterO = Counter(y_positionsO)
 
-    if any(conditions1) or sorted(x_positionsX) == [0, 167, 334] and sorted(y_positionsX) == [0, 167, 334]:
+    for v1 in x_counterX.values():
+            if v1 >= 3:
+                condition1X = True
+    for v1 in x_counterO.values():
+            if v1 >= 3:
+                condition1O = True
+
+    for v1 in y_counterX.values():
+            if v1 >= 3:
+                condition1X = True
+    for v1 in y_counterO.values():
+            if v1 >= 3:
+                condition1O = True
+
+    for p in diagonals1:
+            if p in lstX:
+                counter3X += 1
+    for p in diagonals1:
+            if p in lstO:
+                counter3O += 1
+
+    for p in diagonals2:
+            if p in lstX:
+                counter4X += 1
+    for p in diagonals2:
+            if p in lstO:
+                counter4O += 1
+
+    if condition1X or counter2X >= 3 or counter3X >= 3 or counter4X >= 3:
         return 'x'
-
-    elif any(conditions2) or sorted(x_positionsO) == [0, 167, 334] and sorted(y_positionsO) == [0, 167, 334]:
+    if condition1O or counter2O >= 3 or counter3O >= 3 or counter4O >= 3:
         return 'o'
-    
-    elif not positions_copy:
+    if not positions_copy:
         return 'tie'
-
 
 
 def best_move(board):
@@ -99,7 +172,7 @@ def best_move(board):
     for k, v in board.items():
         if v is None:
             board[k] = 'x'
-            score = minimax(board, 0, True) 
+            score = minimax(board, 0, False) 
             board[k] = None
             if score > bestScore:
                 bestScore = score
@@ -108,7 +181,7 @@ def best_move(board):
 
 
 def minimax(board, depth, maximizingplayer):
-    #return 1
+
     winner = check_winner_minimax(board)
     if winner is not None:
         return scores[winner]
@@ -175,7 +248,7 @@ while running:
                     turn = 'x'
                     break
 
-    winner = check_winner(player_movements)
+    winner = check_winner_minimax(board)
     if winner is not None:
         if winner == 'tie':
             redraw_window(win)
