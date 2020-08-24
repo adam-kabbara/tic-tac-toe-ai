@@ -54,44 +54,6 @@ def redraw_window(win):
     pygame.display.update()
 
 
-def check_winner(player_movements):
-    for k, v in player_movements.items():
-        condition1 = False
-        counter1 = 0
-        counter2 = 0
-        counter3 = 0
-        counter4 = 0
-        lst = list(v)
-
-        x_positions = [tup[0] for tup in lst]
-        y_positions = [tup[1] for tup in lst]
-        x_counter = Counter(x_positions)
-        y_counter = Counter(y_positions)
-        diagonals1 = [(0, 0, 167, 167), (167, 167, 334, 334), (334, 334, 501, 501)]
-        diagonals2 = [(334, 0, 501, 167), (167, 167, 334, 334), (0, 334, 167, 501)]
-
-        for p in diagonals1:
-            if p in lst:
-                counter3 += 1
-        for p in diagonals2:
-            if p in lst:
-                counter4 += 1
-
-        for v1 in x_counter.values():
-            if v1 >= 3:
-                condition1 = True
-        for v1 in y_counter.values():
-            if v1 >= 3:
-                condition1 = True
-        
-        if condition1 or counter2 >= 3 or counter3 >= 3 or counter4 >= 3:
-            return k
-            break
-
-    if not positions_copy:
-        return 'tie'
-
-
 def check_winner_minimax(board):
     x_positionsX = []
     y_positionsX = []
@@ -177,7 +139,7 @@ def best_move(board):
             if score > bestScore:
                 bestScore = score
                 return k
-    
+
 
 
 def minimax(board, depth, maximizingplayer):
