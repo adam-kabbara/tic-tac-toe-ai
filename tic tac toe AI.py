@@ -174,7 +174,7 @@ running = True
 turn = 'x'
 player_objects = []
 player_movements = defaultdict(list)
-scores = {'x': 1, 'o': -1, 'tie': 0}
+scores = {'x': 10, 'o': -math.inf, 'tie': 0}
 player_movements_copy = player_movements.copy()
 
 board = {}
