@@ -138,7 +138,8 @@ def best_move(board):
             board[k] = None
             if score > bestScore:
                 bestScore = score
-                return k
+                move = k
+    return move
 
 
 
@@ -146,7 +147,7 @@ def minimax(board, depth, maximizingplayer):
 
     winner = check_winner_minimax(board)
     if winner is not None:
-        return scores[winner]
+        return scores[winner] - depth
 
     if maximizingplayer:
         bestScore = -math.inf
@@ -156,7 +157,7 @@ def minimax(board, depth, maximizingplayer):
                 score = minimax(board, depth + 1, False) 
                 board[k] = None
                 bestScore = max(score, bestScore)
-        return bestScore
+        return bestScore - depth
 
     else:
         bestScore = math.inf
@@ -166,7 +167,7 @@ def minimax(board, depth, maximizingplayer):
                 score = minimax(board, depth + 1, True) 
                 board[k] = None
                 bestScore = min(score, bestScore)
-        return bestScore
+        return bestScore - depth
 
 
 grid = Board()
@@ -190,7 +191,6 @@ while running:
 
         if turn == 'x':
             p = best_move(board)
-            print(p)
             pos = (p[0] + 47, p[1] +14 )
             player_objects.append(Player(pos, 'x', (255, 10, 10)))
             player_movements['x'].append(p)
