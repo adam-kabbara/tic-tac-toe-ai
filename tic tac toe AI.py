@@ -143,7 +143,7 @@ def best_move(board):
 
 
 
-def minimax(board, depth, maximizingplayer):
+def minimax(board, depth, maximizingplayer, alpha=-math.inf, beta=math.inf):
 
     winner = check_winner_minimax(board)
     if winner is not None:
@@ -154,9 +154,13 @@ def minimax(board, depth, maximizingplayer):
         for k, v in board.items():
             if v is None:
                 board[k] = 'x'
-                score = minimax(board, depth + 1, False) 
+                score = minimax(board, depth + 1, False, alpha, beta) 
                 board[k] = None
                 bestScore = max(score, bestScore)
+                alpha = max(alpha, bestScore)
+                if beta <= alpha:
+                    break
+            
         return bestScore - depth
 
     else:
@@ -164,9 +168,12 @@ def minimax(board, depth, maximizingplayer):
         for k, v in board.items():
             if v is None:
                 board[k] = 'o'
-                score = minimax(board, depth + 1, True) 
+                score = minimax(board, depth + 1, True, alpha, beta) 
                 board[k] = None
                 bestScore = min(score, bestScore)
+                beta = min(beta, bestScore)
+                if beta <= alpha:
+                    break
         return bestScore - depth
 
 
@@ -175,7 +182,7 @@ running = True
 turn = 'x'
 player_objects = []
 player_movements = defaultdict(list)
-scores = {'x': 10, 'o': -math.inf, 'tie': 0}
+scores = {'x': 10, 'o': -10, 'tie': 0}
 player_movements_copy = player_movements.copy()
 
 board = {}
